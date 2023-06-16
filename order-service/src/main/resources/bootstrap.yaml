@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: order-service
+  cloud:
+    config:
+      label: main # 分支名
+      name: order # 配置文件前缀
+      profile: stg # 配置文件后缀
+      uri: http://localhost:7004 # config-server地址
+
+server:
+  port: 7002
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:  # Global default settings
+        register-health-indicator: true
+        sliding-window-size: 50
+    instances:
+      testCircuitBreaker:
+        register-health-indicator: true
+        sliding-window-size: 10
+        permitted-number-of-calls-in-half-open-state: 3
+  retry:
+    instances:
+      testRetry:
+        max-attempts: 5
+        wait-duration: 2s
+  timelimiter:
+    instances:
+      testTimeLimiter:
+        timeout-duration: 2s
+

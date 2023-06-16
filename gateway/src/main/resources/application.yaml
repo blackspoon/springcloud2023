@@ -1,0 +1,37 @@
+server:
+  port: 7003
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: order  # 可以测试： http://localhost:7003/order/getProductList or http://localhost:7003/order/getProduct?id=4
+          uri: lb://order-service:7002
+          predicates:
+            - Path=/order/**
+        - id: product # 可以测试：http://localhost:7003/product/list or http://localhost:7003/product/find?id=2
+          uri: lb://product-service:7001
+          predicates:
+            - Path=/product/**
+          filters:
+            - name: CustomRequestRateLimiter # 这里使用自定义的，默认的是RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1  # 令牌桶每秒填充速率, 指的是允许用户每秒执行多少请求，不丢弃任何请求;
+                redis-rate-limiter.burstCapacity: 2  # 令牌桶总容量, 指的是用户在一秒钟内允许执行的最大请求数，也就是令牌桶可以保存的令牌数, 如果将此值设置为零将阻止所有请求;
+                redis-rate-limiter.requestedTokens: 1 # 指的是每个请求消耗多少个令牌, 默认是1
+                key-resolver: "#{@remoteAddrKeyResolver}" # 指的是限流的时候以什么维度来判断，使用SpEL表达式按名称引用BEAN(REDIS中限流相关的KEY和此处的配置相关)
+  data:
+    redis:
+      host: localhost
+      database: 0
+      port: 6379
+
+
+
