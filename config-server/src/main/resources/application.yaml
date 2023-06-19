@@ -8,7 +8,16 @@ spring:
           uri: http://139.9.116.93:8099/root/springcloud-config.git
           username: root
           password: clx123456
-          default-label: main # ??
+          default-label: main # branch
+        monitor:
+          gitlab:
+            enabled: true
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 server:
   port: 7004
 

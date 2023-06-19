@@ -3,7 +3,7 @@
 基于最新的springboot3构筑springcloud体系，包含：
 
 - 注册中心Eureka
-- 配置中心Config
+- 配置中心Config + Bus
 - 服务间调用OpenFeign
 - 网关Gateway
 - 负载均衡Loadbalancer
